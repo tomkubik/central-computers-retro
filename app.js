@@ -14,6 +14,7 @@ const state = {
   prodIndex: 0,            // Starts on RTX Pro 6000 Blackwell Max-Q 96GB GDDR7
   activeCol: 'categories', // 'categories' | 'products' (when focusZone === 'main')
   currentView: 'browser',  // 'browser' | 'basket'
+  basketIndex: 0,          // Active item row index inside Basket View
   filterQuery: '',
   themeIndex: 0,
   themes: ['default', 'theme-amber', 'theme-green'],
@@ -159,6 +160,8 @@ function updateFocusVisuals() {
     const activeBtn = els.fkeyBtns[state.bottomMenuIndex];
     const lbl = activeBtn ? activeBtn.textContent.trim() : 'F-KEY';
     els.activeColIndicator.textContent = `ZONE: [BOTTOM PANE] ${lbl}`;
+  } else if (state.currentView === 'basket') {
+    els.activeColIndicator.textContent = `ZONE: [BASKET VIEW] ↑↓ SELECT | ←→/+/- QTY`;
   } else {
     const colLbl = state.activeCol === 'categories' ? '[COL 1] CATEGORY' : '[COL 2] PRODUCTS';
     els.activeColIndicator.textContent = `ZONE: [MAIN VIEW] ${colLbl}`;
@@ -266,6 +269,7 @@ function renderBasket() {
   els.headerBasketBtn.classList.toggle('active-basket', state.currentView === 'basket');
 
   if (state.basket.length === 0) {
+    state.basketIndex = 0;
     els.basketItemsContainer.innerHTML = `
       <div style="text-align:center; padding:32px; color:var(--nc-text-cyan); border:2px dashed var(--nc-border-light);">
         RIG BASKET IS EMPTY.<br/>Press [F2] to return to the Product Browser, or click [F6 Load AI Workstation Preset].
@@ -274,18 +278,26 @@ function renderBasket() {
     return;
   }
 
+  if (state.basketIndex >= state.basket.length) {
+    state.basketIndex = state.basket.length - 1;
+  }
+  if (state.basketIndex < 0) {
+    state.basketIndex = 0;
+  }
+
   // Matches Slide 2 row layout: [ Product name box ] [ Mini Pixel Art + Connector ] [ Price box ] [Qty/Remove]
   els.basketItemsContainer.innerHTML = state.basket.map((item, idx) => {
     const p = item.product;
     const lineTotal = p.price * item.qty;
     const miniArt = renderPixelArtHTML(p.artTemplate, p.artVariant, p);
     const connObj = CONNECTOR_ART[p.connector] || CONNECTOR_ART['12v-2x6'];
+    const isSelected = idx === state.basketIndex;
 
     return `
-      <div class="basket-item-row">
+      <div class="basket-item-row ${isSelected ? 'selected' : ''}" data-row-idx="${idx}">
         <div class="basket-product-box">
-          <div>${p.name}</div>
-          <div class="basket-product-sub">${p.manufacturer} | SKU: ${p.sku} | Qty: ${item.qty}</div>
+          <div>${isSelected ? '❱ ' : ''}${p.name}</div>
+          <div class="basket-product-sub">${p.manufacturer} | SKU: ${p.sku} | Unit: ${formatCurrency(p.price)} | Qty: ${item.qty}</div>
         </div>
 
         <div class="basket-art-thumb" title="High-Res Pixelated Block-Tile Thumbnail">
@@ -298,9 +310,10 @@ function renderBasket() {
         </div>
 
         <div class="basket-row-actions">
-          <button class="qty-btn" data-basket-action="dec" data-idx="${idx}" title="Decrease Qty">-</button>
-          <button class="qty-btn" data-basket-action="inc" data-idx="${idx}" title="Increase Qty">+</button>
-          <button class="qty-btn" data-basket-action="del" data-idx="${idx}" title="Remove Item" style="color:var(--nc-text-danger)">×</button>
+          <button class="qty-btn" data-basket-action="dec" data-idx="${idx}" title="Decrease Qty (← or -)">-</button>
+          <span class="basket-qty-display" title="Selected Quantity">${item.qty}x</span>
+          <button class="qty-btn" data-basket-action="inc" data-idx="${idx}" title="Increase Qty (→ or +)">+</button>
+          <button class="qty-btn" data-basket-action="del" data-idx="${idx}" title="Remove Item (Delete)" style="color:var(--nc-text-danger)">×</button>
         </div>
       </div>
     `;
@@ -460,14 +473,28 @@ els.closeBasketBtn.addEventListener('click', () => setViewMode('browser'));
 els.returnToBrowserBtn.addEventListener('click', () => setViewMode('browser'));
 
 els.basketItemsContainer.addEventListener('click', e => {
+  const row = e.target.closest('.basket-item-row');
   const btn = e.target.closest('.qty-btn');
+
+  if (row && !btn) {
+    state.focusZone = 'main';
+    state.basketIndex = Number(row.dataset.rowIdx);
+    updateFocusVisuals();
+    renderBasket();
+    return;
+  }
+
   if (!btn) return;
   const idx = Number(btn.dataset.idx);
   const action = btn.dataset.basketAction;
   if (!state.basket[idx]) return;
 
+  state.focusZone = 'main';
+  state.basketIndex = idx;
+
   if (action === 'inc') {
     state.basket[idx].qty += 1;
+    triggerBasketPowerFlash();
   } else if (action === 'dec') {
     state.basket[idx].qty -= 1;
     if (state.basket[idx].qty <= 0) state.basket.splice(idx, 1);
@@ -475,6 +502,7 @@ els.basketItemsContainer.addEventListener('click', e => {
     state.basket.splice(idx, 1);
   }
   hideOrderSlip();
+  updateFocusVisuals();
   renderBasket();
 });
 
@@ -529,6 +557,8 @@ function loadNextPresetRig() {
   currentPresetIdx = (currentPresetIdx + 1) % RIG_PRESETS.length;
   const preset = RIG_PRESETS[currentPresetIdx];
   state.basket = preset.items().filter(i => i.product);
+  state.basketIndex = 0;
+  state.focusZone = 'main';
   hideOrderSlip();
 
   const titleEl = document.getElementById('rigBasketTitle');
@@ -849,8 +879,8 @@ window.addEventListener('keydown', e => {
       setViewMode(state.topMenuIndex === 0 ? 'browser' : 'basket');
       return;
     }
-    if (e.key === 'ArrowDown' && state.currentView === 'browser') {
-      // Pressing Down from Top Menu drops straight into Main Product View pane
+    if (e.key === 'ArrowDown') {
+      // Pressing Down from Top Menu drops straight into Main View pane (Browser or Basket)
       e.preventDefault();
       state.focusZone = 'main';
       updateFocusVisuals();
@@ -864,7 +894,7 @@ window.addEventListener('keydown', e => {
     return;
   }
 
-  // ZONE 3: BOTTOM PANE (Help, Browser, BasketVw, Filter, AddRig+, Preset, Palette, ClearRig, OrderSlp, ExitBskt)
+  // ZONE 3: BOTTOM PANE (Help, Browser, BasketVw, Filter, Add to Basket, Preset, Palette, Clear Basket, OrderSlp, Central.com)
   if (state.focusZone === 'bottom') {
     if (e.key === 'ArrowRight') {
       e.preventDefault();
@@ -878,8 +908,8 @@ window.addEventListener('keydown', e => {
       updateFocusVisuals();
       return;
     }
-    if (e.key === 'ArrowUp' && state.currentView === 'browser') {
-      // Pressing Up from Bottom Pane jumps back into Main Product View pane
+    if (e.key === 'ArrowUp') {
+      // Pressing Up from Bottom Pane jumps back into Main View pane (Browser or Basket)
       e.preventDefault();
       state.focusZone = 'main';
       updateFocusVisuals();
@@ -897,9 +927,62 @@ window.addEventListener('keydown', e => {
     return;
   }
 
-  // ZONE 2: MAIN VIEW (Categories & Products)
-  if (state.currentView === 'basket') return;
+  // ZONE 2: MAIN VIEW — BASKET NAVIGATION & QUANTITY ADJUSTMENT
+  if (state.currentView === 'basket') {
+    if (state.basket.length === 0) return;
 
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      state.basketIndex = (state.basketIndex + 1) % state.basket.length;
+      renderBasket();
+      scrollBasketSelectedIntoView();
+      return;
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      state.basketIndex = (state.basketIndex - 1 + state.basket.length) % state.basket.length;
+      renderBasket();
+      scrollBasketSelectedIntoView();
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      if (state.basket[state.basketIndex]) {
+        state.basket[state.basketIndex].qty += 1;
+        hideOrderSlip();
+        renderBasket();
+        triggerBasketPowerFlash();
+        scrollBasketSelectedIntoView();
+      }
+      return;
+    }
+    if (e.key === 'ArrowLeft' || e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      if (state.basket[state.basketIndex]) {
+        state.basket[state.basketIndex].qty -= 1;
+        if (state.basket[state.basketIndex].qty <= 0) {
+          state.basket.splice(state.basketIndex, 1);
+        }
+        hideOrderSlip();
+        renderBasket();
+        scrollBasketSelectedIntoView();
+      }
+      return;
+    }
+    if (e.key === 'Delete') {
+      e.preventDefault();
+      if (state.basket[state.basketIndex]) {
+        state.basket.splice(state.basketIndex, 1);
+        hideOrderSlip();
+        renderBasket();
+        scrollBasketSelectedIntoView();
+      }
+      return;
+    }
+    return;
+  }
+
+  // ZONE 2: MAIN VIEW — PRODUCT BROWSER (Categories & Products)
   if (navigateMainProductPane(e.key)) {
     e.preventDefault();
   } else if (e.key === 'Enter' || e.key === ' ') {
@@ -912,6 +995,12 @@ window.addEventListener('keydown', e => {
     }
   }
 });
+
+function scrollBasketSelectedIntoView() {
+  if (!els.basketItemsContainer) return;
+  const sel = els.basketItemsContainer.querySelector('.basket-item-row.selected');
+  if (sel) sel.scrollIntoView({ block: 'nearest' });
+}
 
 function scrollSelectedIntoView() {
   const container = state.activeCol === 'categories' ? els.categoryList : els.productList;
