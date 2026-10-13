@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CENTRAL COMPUTERS // Norton Commander Catalog TUI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="crt-overlay" id="crtOverlay"></div>
+
+  <!-- Very Large Two-Line Central Computers Banner with HUGE Pixel-Block "C" Emblem (Always Official Green #00894a) -->
+  <header class="cc-hero-banner" aria-label="Central Computers Banner">
+    <div class="cc-brand-lockup">
+      <!-- Huge Pixel-Tile "C" Emblem in Central Computers' official green (#00894a) -->
+      <div class="cc-huge-c-badge" aria-hidden="true">  ▄██████████▄  
+ ███▀▀▀▀▀▀▀▀███ 
+███░░▄█████▀░░▀ 
+███░░███▀       
+███░░▀█████▄░░▄ 
+ ███▄▄▄▄▄▄▄▄███ 
+  ▀██████████▀  </div>
+      <div class="cc-brand-text">
+        <div class="cc-title-line1">CENTRAL</div>
+        <div class="cc-title-line2">COMPUTERS</div>
+      </div>
+    </div>
+
+    <div class="cc-banner-meta">
+      <div class="cc-tagline">BAY AREA SILICON &amp; AI HARDWARE // 239 ITEMS IN CATALOG</div>
+      <div class="cc-banner-controls">
+        <span class="active-col-pill" id="activeColIndicator">FOCUS: [1] CATEGORY</span>
+        <button class="nc-top-btn" id="crtToggleBtn" title="Toggle CRT Scanlines">[CRT: ON]</button>
+        <span class="nc-clock" id="dosClock">19:57:00</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- View Switcher Bar (matches Google Slides tab header + Basket button) -->
+  <div class="nc-tabbar">
+    <div class="nc-tabs">
+      <button class="nc-tab active" id="tabBrowser" data-view="browser" title="Switch to Product Browser (F2 or F10)">
+        <span class="tab-bracket">┌─</span> [F2] Product browser <span class="tab-bracket">─┐</span>
+      </button>
+      <button class="nc-tab" id="tabBasket" data-view="basket" title="Switch to Rig Basket View (F3 or B)">
+        <span class="tab-bracket">┌─</span> [F3] Basket view <span class="tab-bracket">─┐</span>
+      </button>
+    </div>
+
+    <div class="nc-path-indicator">
+      <span>DIR: </span><span id="dosBreadcrumb">C:\CENTRAL\AI_COMPONENTS\GPUS&gt;</span>
+    </div>
+
+    <div class="nc-basket-header-actions">
+      <button class="nc-basket-box" id="headerBasketBtn" title="Toggle Rig Basket View (F3 / F10 / B)">
+        <span class="basket-checkbox" id="basketCheckIcon">☐</span>
+        <span class="basket-label">Basket</span>
+        <span class="basket-badge" id="basketCountBadge">[3]</span>
+        <span class="basket-mini-total" id="basketHeaderTotal">$19,999.97</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Norton Commander Workspace -->
+  <main class="nc-workspace" id="workspace">
+    <!-- Left / Center Two-Column Layout (Category | Manufacturer & Product) matching Slide 1 -->
+    <section class="nc-pane nc-pane-catalog" aria-label="Catalog Categories and Products">
+      <!-- Column Headers with Explicit Active Focus Indicators -->
+      <div class="nc-grid-header">
+        <div class="col-hdr col-cat" id="hdrCategories" data-col="categories">
+          <span><span class="focus-dot">▶</span> Category</span>
+          <span class="col-count">(15)</span>
+        </div>
+        <div class="col-hdr col-mfg" id="hdrProducts" data-col="products">
+          <span><span class="focus-dot">▶</span> Manufacturer &amp; Product</span>
+          <span class="col-count" id="prodCountHdr">(33)</span>
+        </div>
+      </div>
+
+      <div class="nc-miller-body">
+        <!-- Column 1: 15 Categories from Central Computers -->
+        <nav class="nc-col nc-col-categories" id="categoryList" aria-label="Product Categories" tabindex="0">
+          <!-- Populated by JS -->
+        </nav>
+
+        <!-- Column 2: All Merged Products in Selected Category (Manufacturer Badge + Product Name + SKU + Price) -->
+        <div class="nc-col nc-col-products" id="productList" role="listbox" aria-label="Products" tabindex="0">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Pane status footer -->
+      <div class="nc-pane-footer">
+        <span id="catalogStatusText">↑↓ Select | ←→ Switch Column | Enter/F5 Add | F2/F3 View | F10 Back</span>
+        <span id="selectedSkuStatus">SKU: VGAPNYRP60QR</span>
+      </div>
+    </section>
+
+    <!-- Right Pane: 2x Larger High-Resolution Pixelated Tile Art + Specifications Table -->
+    <section class="nc-pane nc-pane-inspector" aria-label="Product Pixel Art and Specifications">
+      <div class="nc-grid-header inspector-header">
+        <div class="col-hdr inspector-col-hdr">
+          <span>Image <span class="nc-dim-tag">[2X HI-RES TILE ART]</span></span>
+        </div>
+        <div class="inspector-actions">
+          <button class="nc-action-btn" id="addToBasketBtn">
+            <span class="btn-key">F5</span> + ADD TO BASKET
+          </button>
+        </div>
+      </div>
+
+      <div class="nc-inspector-body">
+        <!-- High-Fidelity 2x Scaled Pixelated Art Stage -->
+        <div class="nc-pixel-stage">
+          <div class="pixel-stage-top">
+            <div class="pixel-mfg-badge" id="inspectorMfgBadge"></div>
+            <div class="pixel-price-tag" id="inspectorPriceTag">$14,999.99</div>
+          </div>
+
+          <div class="pixel-canvas-wrapper">
+            <div class="pixel-art-grid" id="pixelArtViewport" aria-label="Norton Commander High-Resolution Pixel Art">
+              <!-- Rendered with high-density block/shaded tiles by JS -->
+            </div>
+            <!-- Secondary connector / detail badge in bottom-right of image, matching Slide 1 16-pin / socket icon! -->
+            <div class="pixel-connector-badge" id="pixelConnectorBadge" title="Connector / Interface Tile Art">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="pixel-stage-caption">
+            <span class="tile-legend">TILES: █ SOLID  ▓ DARK  ▒ MED  ░ LIGHT  ▀▄ HALF</span>
+            <span class="stock-indicator" id="inspectorStock">■ IN STOCK: SANTA CLARA / SF / NEWARK</span>
+          </div>
+        </div>
+
+        <!-- Specifications Table (Matching Slide 1 bottom-right table) -->
+        <div class="nc-specs-container">
+          <div class="nc-specs-title">Specifications — <span id="specsProductTitle">RTX Pro 6000 Blackwell Max-Q</span></div>
+          <table class="nc-specs-table" id="specsTable">
+            <tbody>
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Overlay: Basket View ("Rig basket" matching Slide 2) -->
+    <div class="nc-basket-overlay hidden" id="basketOverlay" role="dialog" aria-modal="true" aria-labelledby="rigBasketTitle">
+      <div class="nc-basket-window">
+        <div class="nc-window-titlebar">
+          <span>╔══[ RIG BASKET // CENTRAL COMPUTERS BUILDER ]══╗</span>
+          <button class="nc-window-close" id="closeBasketBtn" title="Exit Basket (F2 or Backspace)">[X] F2 EXIT BASKET</button>
+        </div>
+
+        <div class="nc-basket-content">
+          <div class="nc-basket-top-row">
+            <div class="rig-basket-header-box" id="rigBasketTitle">Rig basket</div>
+            <div class="rig-basket-controls">
+              <button class="nc-sm-btn" id="loadSampleRigBtn">[F6] Load AI Workstation Preset</button>
+              <button class="nc-sm-btn danger" id="clearBasketBtn">[F8] Clear Basket</button>
+              <button class="nc-sm-btn exit-btn" id="returnToBrowserBtn">[F2] Return to Browser</button>
+            </div>
+          </div>
+
+          <!-- Basket Items List matching Slide 2: [Product name box] [Mini Pixel Art + Connector] [Price box] -->
+          <div class="nc-basket-items" id="basketItemsContainer">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Subtotal Box centered/aligned as in Slide 2 -->
+          <div class="nc-basket-footer">
+            <div class="nc-subtotal-box">
+              <span class="subtotal-label">Subtotal</span>
+              <span class="subtotal-amount" id="basketSubtotalValue">$0.00</span>
+            </div>
+            <div class="nc-checkout-actions">
+              <button class="nc-action-btn primary" id="checkoutBtn">[F9] GENERATE BAY AREA STORE PICKUP SLIP</button>
+            </div>
+          </div>
+
+          <!-- Pickup slip message -->
+          <div class="nc-pickup-slip hidden" id="pickupSlipBox"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- DOS Command Prompt Line -->
+  <div class="nc-cmdline">
+    <span class="cmd-prompt" id="dosPromptLabel">C:\CENTRAL&gt;</span>
+    <input type="text" id="dosCommandInput" class="cmd-input" placeholder="Type filter across all 239 products (e.g. '6000', 'EPYC', 'DDR5', 'basket', 'clear') — F10 for centralcomputer.com..." autocomplete="off" />
+  </div>
+
+  <!-- Norton Commander Function Key Bar (F1..F10) -->
+  <footer class="nc-fkeybar">
+    <button class="fkey-btn" id="fkey1" data-action="help"><span class="fkey-num">F1</span><span class="fkey-lbl">Help</span></button>
+    <button class="fkey-btn active-fkey" id="fkey2" data-action="view-browser"><span class="fkey-num">F2</span><span class="fkey-lbl">Browser</span></button>
+    <button class="fkey-btn" id="fkey3" data-action="view-basket"><span class="fkey-num">F3</span><span class="fkey-lbl">BasketVw</span></button>
+    <button class="fkey-btn" id="fkey4" data-action="focus-search"><span class="fkey-num">F4</span><span class="fkey-lbl">Filter</span></button>
+    <button class="fkey-btn" id="fkey5" data-action="add-item"><span class="fkey-num">F5</span><span class="fkey-lbl">Add to Basket</span></button>
+    <button class="fkey-btn" id="fkey6" data-action="preset-rig"><span class="fkey-num">F6</span><span class="fkey-lbl">Preset</span></button>
+    <button class="fkey-btn" id="fkey7" data-action="cycle-palette"><span class="fkey-num">F7</span><span class="fkey-lbl">Palette</span></button>
+    <button class="fkey-btn" id="fkey8" data-action="clear-rig"><span class="fkey-num">F8</span><span class="fkey-lbl">Clear Basket</span></button>
+    <button class="fkey-btn" id="fkey9" data-action="pickup-slip"><span class="fkey-num">F9</span><span class="fkey-lbl">OrderSlp</span></button>
+    <button class="fkey-btn" id="fkey10" data-action="exit-back"><span class="fkey-num">F10</span><span class="fkey-lbl" id="fkey10Label">Central.com</span></button>
+  </footer>
+
+  <!-- Help Modal -->
+  <div class="nc-basket-overlay hidden" id="helpOverlay" role="dialog" aria-modal="true">
+    <div class="nc-basket-window nc-help-window">
+      <div class="nc-window-titlebar">
+        <span>╔══[ F1: NORTON COMMANDER TUI HELP ]══╗</span>
+        <button class="nc-window-close" id="closeHelpBtn">[X] F1 EXIT HELP</button>
+      </div>
+      <div class="nc-help-body">
+        <p><strong>CENTRAL COMPUTERS TUI</strong> — All <strong>239 AI Components</strong> products across 15 categories from <code>centralcomputer.com</code>.</p>
+        <ul>
+          <li><strong>← / → Arrows or Tab:</strong> Switch active column between <strong>Category</strong> (left) and <strong>Manufacturer &amp; Product</strong> (middle).</li>
+          <li><strong>↑ / ↓ Arrows:</strong> Navigate items inside the currently focused column.</li>
+          <li><strong>F2 / F3 (or number keys 2 / 3, or B):</strong> Toggle between <strong>Product Browser</strong> (Slide 1) and <strong>Rig Basket View</strong> (Slide 2).</li>
+          <li><strong>F5 / Enter / Space:</strong> Add the currently inspected component to your <strong>Rig Basket</strong>.</li>
+          <li><strong>F10 (or 0):</strong> Visit official <strong>Central Computers website</strong> (<code>https://www.centralcomputer.com/</code>).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="catalog.js"></script>
+  <script src="pixelart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

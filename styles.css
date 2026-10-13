@@ -1,0 +1,1417 @@
+/* ==========================================================================
+   CENTRAL COMPUTERS - NORTON COMMANDER TUI STYLESHEET (v4 - RESPONSIVE)
+   Responsive fluid scaling (`clamp` + container queries), auto-fitting
+   product pixel art, single-line categories/tabs/headers, & official green logo.
+   ========================================================================== */
+
+:root {
+  /* Classic Norton Commander EGA/VGA Palette with Deep Rich Golden Yellow */
+  --nc-bg-deep: #00005a;
+  --nc-bg-panel: #000088;
+  --nc-bg-panel-inactive: #00003c;
+  --nc-bg-panel-alt: #000c52;
+  --nc-bg-header: #008484;
+  --nc-bg-selected-inactive: #005577;
+  --nc-bg-selected-focus: #f5b800;
+  --nc-bg-modal: #000058;
+  --nc-bg-dark: #000020;
+
+  --nc-text-main: #ffffff;
+  --nc-text-inactive: #8899bb;
+  --nc-text-cyan: #55ffff;
+  --nc-text-yellow: #f5b800;
+  --nc-text-green: #55ff55;
+  --nc-text-muted: #7799bb;
+  --nc-text-dark: #000000;
+  --nc-text-danger: #ff5555;
+
+  --nc-border-light: #55ffff;
+  --nc-border-dim: #005577;
+  --nc-border-yellow: #f5b800;
+
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-pixel: 'VT323', monospace;
+}
+
+body.theme-amber {
+  --nc-bg-deep: #140b00;
+  --nc-bg-panel: #261500;
+  --nc-bg-panel-inactive: #120900;
+  --nc-bg-panel-alt: #1a0e00;
+  --nc-bg-header: #804d00;
+  --nc-bg-selected-inactive: #593500;
+  --nc-bg-selected-focus: #ffbb33;
+  --nc-bg-modal: #1f1200;
+  --nc-bg-dark: #0a0500;
+  --nc-text-main: #ffd480;
+  --nc-text-inactive: #885511;
+  --nc-text-cyan: #ffaa00;
+  --nc-text-yellow: #ffee99;
+  --nc-text-green: #ffd24d;
+  --nc-text-muted: #996622;
+  --nc-border-light: #ffaa00;
+  --nc-border-dim: #553300;
+  --nc-border-yellow: #ffee99;
+}
+
+body.theme-green {
+  --nc-bg-deep: #001206;
+  --nc-bg-panel: #00240c;
+  --nc-bg-panel-inactive: #001005;
+  --nc-bg-panel-alt: #001808;
+  --nc-bg-header: #006622;
+  --nc-bg-selected-inactive: #004418;
+  --nc-bg-selected-focus: #66ff66;
+  --nc-bg-modal: #001a09;
+  --nc-bg-dark: #000903;
+  --nc-text-main: #99ffbb;
+  --nc-text-inactive: #337744;
+  --nc-text-cyan: #33ff77;
+  --nc-text-yellow: #ddff55;
+  --nc-text-green: #55ff55;
+  --nc-text-muted: #338855;
+  --nc-border-light: #33ff77;
+  --nc-border-dim: #00441b;
+  --nc-border-yellow: #ddff55;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--nc-bg-deep);
+  color: var(--nc-text-main);
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.15vw, 20px);
+  line-height: 1.28;
+  user-select: none;
+  -webkit-font-smoothing: none;
+}
+
+/* Subtle CRT scanline effect */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.015), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.015));
+  background-size: 100% 4px, 8px 100%;
+}
+
+.crt-overlay.off {
+  display: none;
+}
+
+/* ==========================================================================
+   VERY TOP: READABLE TWO-LINE CENTRAL COMPUTERS LOGO WITH HUGE "C" EMBLEM
+   Always Official Central Computers Green (#00894a) Regardless of Palette
+   ========================================================================== */
+.cc-hero-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #000024 0%, #001868 55%, #000024 100%);
+  border-bottom: 3px solid var(--nc-border-yellow);
+  padding: 4px 14px;
+  height: clamp(72px, 9.5vh, 96px);
+  gap: 12px;
+  overflow: hidden;
+}
+
+.cc-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 18px);
+  min-width: 0;
+}
+
+/* Huge Pixel-Block "C" Emblem in Central Computers' exact official website green (#00894a) — invariant across palettes */
+.cc-huge-c-badge {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  font-size: clamp(8px, 0.72vw, 11px);
+  line-height: clamp(8px, 0.72vw, 11px);
+  white-space: pre;
+  color: #00894a !important;
+  background: #02140b !important;
+  border: 3px solid #00894a !important;
+  box-shadow: 3px 3px 0 #000000, inset 0 0 0 2px #005c31 !important;
+  padding: 3px 5px;
+  text-shadow: 1px 1px 0 #000000;
+  flex-shrink: 0;
+}
+
+.cc-brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.cc-title-line1 {
+  font-family: var(--font-pixel);
+  font-size: clamp(32px, 3.2vw, 50px);
+  line-height: 0.85;
+  font-weight: 700;
+  letter-spacing: clamp(2px, 0.3vw, 5px);
+  color: #00894a !important;
+  text-shadow: 2px 2px 0 #004424, 4px 4px 0 #000000 !important;
+}
+
+.cc-title-line2 {
+  font-family: var(--font-pixel);
+  font-size: clamp(28px, 2.7vw, 42px);
+  line-height: 0.88;
+  font-weight: 700;
+  letter-spacing: clamp(3px, 0.4vw, 7px);
+  color: #00894a !important;
+  text-shadow: 2px 2px 0 #004424, 4px 4px 0 #000000 !important;
+}
+
+.cc-banner-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.cc-tagline {
+  color: var(--nc-text-cyan);
+  font-size: clamp(11px, 0.95vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  background: rgba(0, 0, 30, 0.7);
+  border: 1px solid var(--nc-border-light);
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.cc-banner-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.active-col-pill {
+  background: var(--nc-bg-selected-focus);
+  color: var(--nc-text-dark);
+  font-weight: 700;
+  font-size: clamp(11px, 0.95vw, 15px);
+  padding: 2px 10px;
+  border: 1px solid #fff;
+  box-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+}
+
+.nc-top-btn {
+  background: var(--nc-bg-deep);
+  color: var(--nc-text-cyan);
+  border: 1px solid var(--nc-border-light);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.95vw, 15px);
+  font-weight: 700;
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nc-top-btn:hover {
+  background: var(--nc-text-yellow);
+  color: var(--nc-text-dark);
+}
+
+.nc-clock {
+  background: #000;
+  color: var(--nc-text-green);
+  padding: 1px 8px;
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 1.5vw, 25px);
+  border: 1px solid var(--nc-border-dim);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   TAB BAR & BASKET BUTTON (Responsive Single-Line + Keyboard Zone Focus)
+   ========================================================================== */
+.nc-tabbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--nc-bg-panel-alt);
+  padding: 4px 12px;
+  height: clamp(40px, 5.2vh, 50px);
+  border-bottom: 2px solid var(--nc-border-light);
+  gap: 10px;
+  transition: box-shadow 0.08s ease;
+}
+
+.nc-tabbar.active-zone {
+  box-shadow: inset 0 0 0 3px var(--nc-border-yellow);
+  background: var(--nc-bg-panel);
+}
+
+.nc-tabs {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nc-tab {
+  background: var(--nc-bg-panel-inactive);
+  color: var(--nc-text-muted);
+  border: 2px solid var(--nc-border-dim);
+  padding: 3px 12px;
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.1vw, 18px);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nc-tab.active {
+  background: var(--nc-bg-selected-inactive);
+  color: var(--nc-text-cyan);
+  border: 2px solid var(--nc-border-light);
+  box-shadow: 3px 3px 0 #000000;
+}
+
+.nc-tab.kb-focus {
+  background: var(--nc-bg-selected-focus) !important;
+  color: var(--nc-text-dark) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 10px rgba(245, 184, 0, 0.75), 3px 3px 0 #000000 !important;
+}
+
+.nc-tab:hover:not(.active) {
+  color: var(--nc-text-yellow);
+  border-color: var(--nc-border-light);
+}
+
+.nc-path-indicator {
+  color: var(--nc-text-cyan);
+  font-size: clamp(12px, 1vw, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+
+#dosBreadcrumb {
+  color: var(--nc-text-yellow);
+  font-weight: 700;
+}
+
+.nc-basket-header-actions {
+  flex-shrink: 0;
+}
+
+.nc-basket-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--nc-bg-panel);
+  color: var(--nc-text-main);
+  border: 2px solid var(--nc-border-light);
+  padding: 3px 12px;
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.1vw, 18px);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--nc-text-dark);
+  white-space: nowrap;
+}
+
+.nc-basket-box:hover,
+.nc-basket-box.active-basket {
+  background: var(--nc-bg-selected-inactive);
+  color: var(--nc-text-cyan);
+  border-color: var(--nc-text-main);
+}
+
+.nc-basket-box.kb-focus {
+  background: var(--nc-bg-selected-focus) !important;
+  color: var(--nc-text-dark) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 10px rgba(245, 184, 0, 0.75), 3px 3px 0 #000000 !important;
+}
+
+.nc-basket-box.kb-focus .basket-checkbox,
+.nc-basket-box.kb-focus .basket-badge {
+  color: var(--nc-text-dark) !important;
+}
+
+.basket-checkbox {
+  font-size: clamp(14px, 1.2vw, 20px);
+  color: var(--nc-text-cyan);
+}
+
+.nc-basket-box:hover .basket-checkbox,
+.nc-basket-box.active-basket .basket-checkbox {
+  color: var(--nc-text-dark);
+}
+
+.basket-badge {
+  color: var(--nc-text-green);
+}
+
+.nc-basket-box:hover .basket-badge,
+.nc-basket-box.active-basket .basket-badge {
+  color: var(--nc-text-dark);
+}
+
+.basket-mini-total {
+  background: var(--nc-bg-dark);
+  color: var(--nc-text-yellow);
+  padding: 1px 6px;
+  font-size: clamp(12px, 1vw, 17px);
+}
+
+/* ==========================================================================
+   MAIN WORKSPACE - DUAL NORTON COMMANDER PANES
+   ========================================================================== */
+.nc-workspace {
+  position: relative;
+  display: grid;
+  grid-template-columns: 54% 46%;
+  height: calc(100vh - clamp(72px, 9.5vh, 96px) - clamp(40px, 5.2vh, 50px) - 34px - 36px);
+  background: var(--nc-bg-deep);
+  padding: 4px;
+  gap: 5px;
+}
+
+.nc-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--nc-bg-panel);
+  border: 3px double var(--nc-border-light);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.nc-pane-inspector {
+  container-type: inline-size;
+}
+
+/* Dim background panes when Basket View modal is open (matches Slide 2!) */
+.nc-workspace.basket-mode > .nc-pane {
+  opacity: 0.25;
+  filter: grayscale(40%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   HIGH-CONTRAST COLUMN FOCUS (Categories vs Products)
+   ========================================================================== */
+.nc-grid-header {
+  display: grid;
+  grid-template-columns: minmax(175px, 28%) 1fr;
+  background: var(--nc-bg-panel-inactive);
+  border-bottom: 2px solid var(--nc-border-light);
+  min-height: clamp(36px, 4.5vh, 44px);
+  align-items: stretch;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--nc-bg-panel-alt);
+  gap: 8px;
+}
+
+.col-hdr {
+  padding: 5px 10px;
+  font-weight: 700;
+  color: var(--nc-text-inactive);
+  background: var(--nc-bg-panel-inactive);
+  border-right: 2px solid var(--nc-border-dim);
+  font-size: clamp(13px, 1.08vw, 18px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.col-hdr:last-child {
+  border-right: none;
+}
+
+.inspector-col-hdr {
+  color: var(--nc-text-yellow);
+  background: transparent;
+  border-right: none;
+  padding: 2px 0;
+  font-size: clamp(13px, 1.1vw, 18px);
+}
+
+.focus-dot {
+  display: inline-block;
+  opacity: 0.2;
+  margin-right: 5px;
+}
+
+/* ACTIVE COLUMN HEADER: Bright Yellow Bar with Dark Text! */
+.col-hdr.active-hdr {
+  background: var(--nc-bg-selected-focus);
+  color: var(--nc-text-dark);
+  border-bottom: 2px solid #ffffff;
+  box-shadow: inset 0 0 0 2px #000;
+}
+
+.col-hdr.active-hdr .focus-dot {
+  opacity: 1;
+  color: #000000;
+}
+
+.col-hdr.active-hdr .col-count {
+  color: #000000;
+  font-weight: 700;
+}
+
+.col-count, .nc-dim-tag {
+  color: var(--nc-text-cyan);
+  font-size: clamp(11px, 0.9vw, 14px);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* Two-Column Body (Category | Manufacturer & Product) */
+.nc-miller-body {
+  display: grid;
+  grid-template-columns: minmax(175px, 28%) 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* INACTIVE COLUMN: Deep Dark Navy, Muted Text */
+.nc-col {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 2px solid var(--nc-border-dim);
+  background: var(--nc-bg-panel-inactive);
+  color: var(--nc-text-inactive);
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--nc-bg-header) var(--nc-bg-dark);
+}
+
+.nc-col:last-child {
+  border-right: none;
+}
+
+/* ACTIVE COLUMN: Vibrant Norton Commander Royal Blue + Thick Bright Yellow Frame! */
+.nc-col.active-col {
+  background: var(--nc-bg-panel);
+  color: var(--nc-text-main);
+  box-shadow: inset 0 0 0 3px var(--nc-border-yellow);
+}
+
+/* Category Section Headers ("Cases:", "Peripherals:") */
+.cat-group-header {
+  padding: 7px 10px 3px 10px;
+  color: var(--nc-text-yellow);
+  font-weight: 700;
+  font-size: clamp(11px, 0.9vw, 15px);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-top: 1px dashed var(--nc-border-dim);
+  background: rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+
+/* Single-line category items — never wrap onto multiple lines! */
+.cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(85, 255, 255, 0.16);
+  color: inherit;
+  font-size: clamp(13px, 1.05vw, 18px);
+  white-space: nowrap;
+}
+
+.cat-item > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cat-item:hover {
+  background: rgba(0, 170, 170, 0.35);
+  color: #ffffff;
+}
+
+/* Selected item in an INACTIVE column (breadcrumb trail) */
+.cat-item.selected {
+  background: var(--nc-bg-selected-inactive);
+  color: var(--nc-text-cyan);
+  font-weight: 700;
+  border-left: 4px solid var(--nc-text-cyan);
+}
+
+/* Selected item in the ACTIVE column: High-Contrast Bright Yellow Cursor Bar! */
+.nc-col.active-col .cat-item.selected {
+  background: var(--nc-bg-selected-focus);
+  color: var(--nc-text-dark);
+  border-left: 6px solid #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 85, 0.55);
+}
+
+.cat-arrow {
+  color: var(--nc-text-cyan);
+  margin-right: 5px;
+}
+
+.nc-col.active-col .cat-item.selected .cat-arrow {
+  color: var(--nc-text-dark);
+}
+
+.item-count-pill {
+  font-size: clamp(11px, 0.85vw, 14px);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* Column 2: Responsive Manufacturer + Product Rows (Minimized Multi-Line Overflow) */
+.product-row {
+  display: grid;
+  grid-template-columns: clamp(135px, 13vw, 195px) 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--nc-border-dim);
+  cursor: pointer;
+  background: transparent;
+}
+
+.product-row:hover {
+  background: rgba(0, 170, 170, 0.32);
+}
+
+.product-row.selected {
+  background: var(--nc-bg-selected-inactive);
+  color: var(--nc-text-main);
+  border-left: 5px solid var(--nc-text-cyan);
+}
+
+.nc-col.active-col .product-row.selected {
+  background: var(--nc-bg-selected-focus);
+  color: var(--nc-text-dark);
+  border-left: 7px solid #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 85, 0.6);
+}
+
+/* Responsive High-Fidelity Pixelated Manufacturer Tile Badge */
+.mfg-tile-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #050814;
+  border: 2px solid var(--nc-border-light);
+  padding: 5px 6px;
+  min-height: clamp(60px, 7vh, 80px);
+  text-align: center;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.product-row.selected .mfg-tile-badge {
+  border-color: #ffffff;
+}
+
+.mfg-pixel-art {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(7px, 0.62vw, 10px);
+  line-height: clamp(7px, 0.62vw, 10px);
+  letter-spacing: 0;
+  white-space: pre;
+  font-weight: 700;
+}
+
+.mfg-name-label {
+  font-size: clamp(11px, 0.85vw, 14px);
+  font-weight: 700;
+  margin-top: 3px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.product-row-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Clamp product row titles to at most 2 clean lines so long descriptions never overflow! */
+.product-row-title {
+  font-weight: 700;
+  font-size: clamp(13px, 1.08vw, 18px);
+  line-height: 1.22;
+  color: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-col.active-col .product-row.selected .product-row-title {
+  color: var(--nc-text-dark);
+}
+
+/* Single-line SKU + Model + Price bar */
+.product-row-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: clamp(11.5px, 0.92vw, 15px);
+  color: var(--nc-text-cyan);
+  white-space: nowrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.product-row-meta > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nc-col.active-col .product-row.selected .product-row-meta {
+  color: #002244;
+  font-weight: 700;
+}
+
+.product-row-price {
+  color: var(--nc-text-yellow);
+  font-weight: 700;
+  font-size: clamp(13px, 1.05vw, 18px);
+  background: #000028;
+  border: 1px solid var(--nc-border-dim);
+  padding: 0 7px;
+  flex-shrink: 0;
+}
+
+.nc-pane-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--nc-bg-panel-alt);
+  border-top: 2px solid var(--nc-border-light);
+  color: var(--nc-text-cyan);
+  font-size: clamp(11px, 0.88vw, 14px);
+  white-space: nowrap;
+  gap: 10px;
+}
+
+.nc-pane-footer > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   RIGHT PANE: AUTO-FITTING PRODUCT PIXEL ART + COMPACT SPECS TABLE
+   ========================================================================== */
+.nc-inspector-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  gap: 8px;
+}
+
+.nc-action-btn {
+  background: var(--nc-text-yellow);
+  color: var(--nc-text-dark);
+  border: 2px solid var(--nc-text-main);
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(12px, 0.98vw, 16px);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--nc-text-dark);
+  white-space: nowrap;
+}
+
+.nc-action-btn:hover {
+  background: var(--nc-text-green);
+}
+
+.btn-key {
+  background: var(--nc-text-dark);
+  color: var(--nc-text-yellow);
+  padding: 0 5px;
+  margin-right: 4px;
+}
+
+/* Responsive Pixel Art Stage that always fits inside the right pane without horizontal scroll! */
+.nc-pixel-stage {
+  display: flex;
+  flex-direction: column;
+  background: #040711;
+  border: 2px solid var(--nc-border-light);
+  padding: 8px 10px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pixel-stage-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed var(--nc-border-dim);
+  padding-bottom: 4px;
+  white-space: nowrap;
+  gap: 8px;
+}
+
+.pixel-mfg-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: clamp(13px, 1.05vw, 18px);
+  color: var(--nc-text-cyan);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pixel-price-tag {
+  font-family: var(--font-pixel);
+  font-size: clamp(24px, 2.1vw, 34px);
+  line-height: 1;
+  color: var(--nc-text-yellow);
+  background: var(--nc-bg-panel);
+  border: 2px solid var(--nc-border-yellow);
+  padding: 2px 10px;
+  flex-shrink: 0;
+}
+
+.pixel-canvas-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(170px, 24vh, 250px);
+  padding: 6px 105px 6px 6px;
+  background:
+    radial-gradient(circle at 45% 50%, rgba(16, 52, 102, 0.36) 0%, rgba(3, 6, 16, 0.98) 100%);
+  overflow: hidden;
+}
+
+/* High-Resolution 88x26 (88x52 subpixel) ANSI Block-Tile Grid that auto-scales to container! */
+.pixel-art-grid {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(5.8px, 1.38cqi, 9.2px);
+  line-height: 1;
+  letter-spacing: 0px;
+  white-space: pre;
+  font-weight: 700;
+}
+
+/* Secondary Connector / Pin Tile Art in Bottom Right */
+.pixel-connector-badge {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(2, 6, 18, 0.96);
+  border: 1px solid var(--nc-border-light);
+  padding: 5px 7px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(6.5px, 0.58vw, 9.5px);
+  line-height: clamp(6.5px, 0.58vw, 9.5px);
+  white-space: pre;
+  text-align: center;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.connector-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 0.75vw, 12px);
+  color: var(--nc-text-yellow);
+  margin-top: 4px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pixel-stage-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--nc-border-dim);
+  font-size: clamp(10px, 0.8vw, 13px);
+  color: var(--nc-text-muted);
+  white-space: nowrap;
+  gap: 8px;
+}
+
+.tile-legend {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stock-indicator {
+  color: var(--nc-text-green);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Specifications Table (Matches Slide 1 Bottom Right) */
+.nc-specs-container {
+  flex: 1;
+  background: var(--nc-bg-panel-alt);
+  border: 2px solid var(--nc-border-light);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.nc-specs-title {
+  background: var(--nc-bg-header);
+  color: var(--nc-text-dark);
+  font-weight: 700;
+  padding: 5px 10px;
+  font-size: clamp(13px, 1.02vw, 17px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(12px, 0.95vw, 15.5px);
+  table-layout: fixed;
+}
+
+.nc-specs-table tr {
+  border-bottom: 1px solid rgba(85, 255, 255, 0.2);
+}
+
+.nc-specs-table tr:nth-child(even) {
+  background: rgba(0, 0, 40, 0.35);
+}
+
+.nc-specs-table td {
+  padding: 4px 10px;
+  vertical-align: top;
+}
+
+.nc-specs-table td.spec-key {
+  width: 38%;
+  color: var(--nc-text-cyan);
+  font-weight: 600;
+  border-right: 1px solid rgba(85, 255, 255, 0.22);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-specs-table td.spec-val {
+  width: 62%;
+  color: var(--nc-text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   SLIDE 2: RESPONSIVE BASKET VIEW OVERLAY ("Rig basket" - Zero Overlap)
+   ========================================================================== */
+.nc-basket-overlay {
+  position: fixed;
+  top: clamp(112px, 14.7vh, 146px);
+  bottom: 70px;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1.2vh, 14px);
+  background: rgba(0, 0, 25, 0.72);
+}
+
+.nc-basket-overlay.hidden {
+  display: none;
+}
+
+.nc-basket-window {
+  width: min(1040px, 96vw);
+  max-height: 100%;
+  background: var(--nc-bg-modal);
+  border: 3px double var(--nc-text-yellow);
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.92);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nc-window-titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--nc-bg-header);
+  color: var(--nc-text-dark);
+  padding: 5px 12px;
+  font-size: clamp(13px, 1.1vw, 17px);
+  font-weight: 700;
+  white-space: nowrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nc-window-titlebar > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-window-close {
+  background: var(--nc-text-yellow);
+  color: var(--nc-text-dark);
+  border: 2px solid #000;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(11px, 0.95vw, 15px);
+  padding: 2px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nc-window-close:hover {
+  background: var(--nc-text-danger);
+  color: #fff;
+}
+
+.nc-basket-content {
+  padding: clamp(10px, 1.5vh, 18px) clamp(12px, 1.8vw, 22px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vh, 14px);
+  flex: 1;
+  min-height: 0;
+}
+
+.nc-basket-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Matches the "Rig basket" boxed header in Slide 2 */
+.rig-basket-header-box {
+  background: var(--nc-bg-panel);
+  color: var(--nc-text-yellow);
+  border: 2px solid var(--nc-border-light);
+  padding: 4px 18px;
+  font-size: clamp(15px, 1.35vw, 22px);
+  font-weight: 700;
+  box-shadow: 3px 3px 0 #000;
+  white-space: nowrap;
+}
+
+.rig-basket-controls {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.nc-sm-btn {
+  background: var(--nc-bg-panel);
+  color: var(--nc-text-cyan);
+  border: 1px solid var(--nc-border-light);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.9vw, 14px);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nc-sm-btn:hover {
+  background: var(--nc-bg-selected-focus);
+  color: var(--nc-text-dark);
+}
+
+.nc-sm-btn.exit-btn {
+  border-color: var(--nc-text-yellow);
+  color: var(--nc-text-yellow);
+}
+
+.nc-sm-btn.danger:hover {
+  background: var(--nc-text-danger);
+  color: var(--nc-text-main);
+}
+
+/* Basket Items List — Independently Scrollable with Zero Overlap! */
+.nc-basket-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 110px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.basket-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(115px, 14vw, 175px) clamp(105px, 11vw, 150px) auto;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px);
+  padding: 6px 10px;
+  background: rgba(0, 0, 40, 0.6);
+  border: 1px dashed var(--nc-border-light);
+  flex-shrink: 0;
+}
+
+.basket-product-box {
+  background: var(--nc-bg-panel);
+  border: 2px solid var(--nc-border-light);
+  padding: 6px 10px;
+  color: var(--nc-text-main);
+  font-weight: 700;
+  font-size: clamp(12px, 1.02vw, 16px);
+  box-shadow: 2px 2px 0 #000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.basket-product-box > div:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.basket-product-sub {
+  font-size: clamp(10.5px, 0.85vw, 13px);
+  color: var(--nc-text-cyan);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Basket Thumbnail Image — strictly contained inside its box */
+.basket-art-thumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #040711;
+  border: 1px solid var(--nc-border-light);
+  padding: 3px;
+  height: clamp(56px, 7.5vh, 78px);
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.basket-art-thumb pre {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(2.1px, 0.25vw, 3.1px);
+  line-height: 1;
+  white-space: pre;
+}
+
+.basket-mini-conn {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  font-size: 3.5px;
+  line-height: 3.5px;
+  background: #000;
+  border: 1px solid var(--nc-border-light);
+  padding: 1px;
+}
+
+.basket-price-box {
+  background: var(--nc-bg-panel);
+  border: 2px solid var(--nc-border-yellow);
+  padding: 6px 8px;
+  text-align: center;
+  color: var(--nc-text-yellow);
+  font-weight: 700;
+  font-size: clamp(13px, 1.1vw, 18px);
+  box-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.basket-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  background: var(--nc-bg-panel);
+  color: var(--nc-text-main);
+  border: 1px solid var(--nc-border-light);
+  width: clamp(24px, 2.2vw, 30px);
+  height: clamp(24px, 2.2vw, 30px);
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1vw, 16px);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qty-btn:hover {
+  background: var(--nc-text-yellow);
+  color: var(--nc-text-dark);
+}
+
+/* Subtotal Box centered as in Slide 2 — Sticky at Bottom of Basket */
+.nc-basket-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 2px solid var(--nc-border-light);
+  flex-shrink: 0;
+}
+
+.nc-subtotal-box {
+  background: var(--nc-bg-panel);
+  border: 2px solid var(--nc-text-yellow);
+  padding: 5px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 3px 3px 0 #000;
+  white-space: nowrap;
+}
+
+.subtotal-label {
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 700;
+  color: var(--nc-text-main);
+}
+
+.subtotal-amount {
+  font-family: var(--font-pixel);
+  font-size: clamp(22px, 2vw, 32px);
+  color: var(--nc-text-green);
+}
+
+.nc-pickup-slip {
+  background: var(--nc-bg-dark);
+  border: 2px solid var(--nc-text-green);
+  color: var(--nc-text-green);
+  padding: 10px;
+  font-size: clamp(11px, 0.9vw, 14px);
+  white-space: pre-wrap;
+  max-height: 130px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   DOS COMMAND LINE & FUNCTION KEY BAR
+   ========================================================================== */
+.nc-cmdline {
+  display: flex;
+  align-items: center;
+  background: #000000;
+  color: var(--nc-text-main);
+  height: 34px;
+  padding: 0 10px;
+  border-top: 1px solid var(--nc-border-dim);
+}
+
+.cmd-prompt {
+  color: var(--nc-text-main);
+  font-weight: 700;
+  font-size: clamp(12px, 1vw, 16px);
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--nc-text-yellow);
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1vw, 16px);
+  min-width: 0;
+}
+
+.nc-fkeybar {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  height: 38px;
+  background: #000000;
+  gap: 2px;
+  padding: 2px;
+  transition: box-shadow 0.08s ease;
+}
+
+.nc-fkeybar.active-zone {
+  box-shadow: inset 0 0 0 2px var(--nc-border-yellow);
+  background: #1a1400;
+}
+
+.fkey-btn {
+  display: flex;
+  align-items: center;
+  background: var(--nc-bg-header);
+  color: var(--nc-text-dark);
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.95vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fkey-btn:hover,
+.fkey-btn.active-fkey {
+  background: var(--nc-bg-selected-inactive);
+  color: var(--nc-text-cyan);
+}
+
+.fkey-btn.kb-focus {
+  background: var(--nc-bg-selected-focus) !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 8px rgba(245, 184, 0, 0.85) !important;
+}
+
+.fkey-num {
+  background: #000000;
+  color: var(--nc-text-main);
+  padding: 1px 4px;
+  margin-right: 4px;
+}
+
+.fkey-lbl {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nc-help-window {
+  width: min(760px, 94vw);
+}
+
+.nc-help-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: clamp(13px, 1.05vw, 17px);
+  line-height: 1.45;
+  overflow-y: auto;
+}
+
+.nc-help-body ul {
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nc-help-body code {
+  background: var(--nc-bg-dark);
+  color: var(--nc-text-yellow);
+  padding: 1px 6px;
+}
+
+/* ==========================================================================
+   SMALLER SCREEN / LAPTOP / TABLET BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1280px) {
+  .cc-tagline {
+    display: none;
+  }
+  .nc-path-indicator {
+    max-width: 26%;
+  }
+  .pixel-canvas-wrapper {
+    padding-right: 84px;
+    min-height: 155px;
+  }
+}
+
+@media (max-width: 980px) {
+  .nc-workspace {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .nc-pane-catalog {
+    min-height: 44vh;
+  }
+  .nc-pane-inspector {
+    min-height: 44vh;
+  }
+  /* On smaller widths, make basket item rows compact 3-column or stacked so nothing ever overlaps */
+  .basket-item-row {
+    grid-template-columns: minmax(0, 1fr) 110px auto;
+    gap: 8px;
+  }
+  .basket-art-thumb {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .cc-huge-c-badge {
+    font-size: 6.5px;
+    line-height: 6.5px;
+  }
+  .nc-path-indicator {
+    display: none;
+  }
+  .basket-item-row {
+    grid-template-columns: 1fr auto;
+  }
+  .basket-product-box {
+    grid-column: 1 / -1;
+  }
+}
