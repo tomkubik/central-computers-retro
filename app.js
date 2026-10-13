@@ -347,6 +347,31 @@ function exitBasketOrStepBack() {
   renderAll();
 }
 
+let basketFlashTimer = null;
+
+function triggerBasketPowerFlash() {
+  [els.headerBasketBtn, els.tabBasket].forEach(el => {
+    if (!el) return;
+    el.classList.remove('tech-power-flash');
+    void el.offsetWidth; // Force reflow so rapid additions re-trigger the surge
+    el.classList.add('tech-power-flash');
+  });
+
+  if (els.basketCheckIcon) {
+    els.basketCheckIcon.textContent = '⚡';
+  }
+
+  if (basketFlashTimer) clearTimeout(basketFlashTimer);
+  basketFlashTimer = setTimeout(() => {
+    [els.headerBasketBtn, els.tabBasket].forEach(el => {
+      if (el) el.classList.remove('tech-power-flash');
+    });
+    if (els.basketCheckIcon) {
+      els.basketCheckIcon.textContent = state.currentView === 'basket' ? '☑' : '☐';
+    }
+  }, 700);
+}
+
 function addCurrentProductToBasket() {
   const prod = getCurrentProduct();
   if (!prod) return;
@@ -359,9 +384,10 @@ function addCurrentProductToBasket() {
   }
 
   renderBasket();
+  triggerBasketPowerFlash();
 
   const origHTML = els.addToBasketBtn.innerHTML;
-  els.addToBasketBtn.innerHTML = `<span class="btn-key">✓</span> ADDED TO BASKET!`;
+  els.addToBasketBtn.innerHTML = `<span class="btn-key">⚡</span> ADDED TO BASKET!`;
   setTimeout(() => {
     els.addToBasketBtn.innerHTML = origHTML;
   }, 850);
